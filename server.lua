@@ -20,6 +20,9 @@ exports("removeCash", removeCash)
 exports("getCash", getCash)
 
 AddEventHandler("QBCore:Server:PlayerLoaded", function(player)
+	if not player then
+		return
+	end
 	local citizenid = player.PlayerData.citizenid
 	local charInfo = player.PlayerData.charinfo
 	local playerSrc = player.PlayerData.source
@@ -30,6 +33,22 @@ AddEventHandler("QBCore:Server:PlayerLoaded", function(player)
 	})
 end)
 
-AddEventHandler("QBCore:Client:OnPlayerUnload", function(src)
+RegisterNetEvent("qb-pefcl:server:UnloadPlayer", function(src)
 	exports.pefcl:unloadPlayer(src)
+end)
+
+AddEventHandler("onServerResourceStart", function(resName)
+	if resName ~= GetCurrentResourceName() then
+		return
+	end
+
+	local players = QBCore.Functions.GetQBPlayers()
+
+	for _, v in pairs(players) do
+		exports.pefcl:loadPlayer(v.PlayerData.source, {
+			source = v.PlayerData.source,
+			identifier = v.PlayerData.citizenid,
+			name = v.PlayerData.charinfo.firstname .. " " .. v.PlayerData.charinfo.lastname,
+		})
+	end
 end)
