@@ -15,10 +15,9 @@ of PEFCL and QBCore installed**
    - Under `target`
      - `type`: `"qb-target"`
      - `enabled`: `true`
-
 4. Navigate to `qb-core\server\player.lua` and replace those functions:
     - self.Functions.AddMoney =>
-      ```
+      ```lua
           function self.Functions.AddMoney(moneytype, amount, reason)
               reason = reason or 'unknown'
               moneytype = moneytype:lower()
@@ -48,7 +47,8 @@ of PEFCL and QBCore installed**
         end
       ```
     - self.Functions.RemoveMoney =>
-      ```
+      ```lua
+            function self.Functions.RemoveMoney(moneytype, amount, reason)
               reason = reason or 'unknown'
               moneytype = moneytype:lower()
               amount = tonumber(amount)
@@ -89,9 +89,10 @@ of PEFCL and QBCore installed**
               end
 
               return true
+            end
         ```
       - self.Functions.SetMoney
-        ```
+        ```lua
               function self.Functions.SetMoney(moneytype, amount, reason)
                   reason = reason or 'unknown'
                   moneytype = moneytype:lower()
@@ -117,12 +118,12 @@ of PEFCL and QBCore installed**
               end
         ```
       - self.Functions.GetMoney
-        ```
+        ```lua
             function self.Functions.GetMoney(moneytype)
                 if not moneytype then return false end
                 moneytype = moneytype:lower()
                 if moneytype == 'bank' then
-                    self.PlayerData.money[moneytype] = exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data  or 0
+                    self.PlayerData.money[moneytype] = exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data or 0
                     return exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data
                 end
                 return self.PlayerData.money[moneytype]
