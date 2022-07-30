@@ -2,6 +2,7 @@
 
 **This is a compatibility resource that enables PEFCL to function properly with QBCore. Please ensure that you have the latest version
 of PEFCL and QBCore installed**
+**Note this currently only works on PEFCL develop branch**
 
 ## Installation Steps:
 
@@ -129,4 +130,3 @@ of PEFCL and QBCore installed**
         ```
 
 
-**Note this currently only works on PEFCL develop branch**
