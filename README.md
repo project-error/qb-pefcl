@@ -100,13 +100,11 @@ of PEFCL and QBCore installed**
 
      ```lua
          function self.Functions.SetMoney(moneytype, amount, reason)
-             reason = reason or 'unknown'
              moneytype = moneytype:lower()
              amount = tonumber(amount)
              if amount < 0 then return false end
              if moneytype == 'bank' then
                  local data = {}
-                 data.message = reason
                  data.amount = amount
                  exports.pefcl:setBankBalance(self.PlayerData.source, data)
                  self.PlayerData.money[moneytype] = exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data or 0
