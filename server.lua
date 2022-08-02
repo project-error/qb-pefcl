@@ -31,10 +31,16 @@ AddEventHandler("QBCore:Server:PlayerLoaded", function(player)
 		identifier = citizenid,
 		name = charInfo.firstname .. " " .. charInfo.lastname,
 	})
+	player.Functions.SyncMoney()
 end)
 
 RegisterNetEvent("qb-pefcl:server:UnloadPlayer", function(src)
 	exports.pefcl:unloadPlayer(src)
+end)
+
+RegisterNetEvent("qb-pefcl:server:SyncMoney", function(src)
+	local Player = QBCore.Functions.GetPlayer(src)
+	Player.Functions.SyncMoney()
 end)
 
 AddEventHandler("onServerResourceStart", function(resName)
@@ -50,5 +56,6 @@ AddEventHandler("onServerResourceStart", function(resName)
 			identifier = v.PlayerData.citizenid,
 			name = v.PlayerData.charinfo.firstname .. " " .. v.PlayerData.charinfo.lastname,
 		})
+		v.Functions.SyncMoney()
 	end
 end)

@@ -75,7 +75,6 @@ of PEFCL and QBCore installed**
                  data.amount = amount
                  data.message = reason
                  exports.pefcl:removeBankBalance(self.PlayerData.source, data)
-                 self.PlayerData.money[moneytype] = exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data or 0
              else
                  self.PlayerData.money[moneytype] = self.PlayerData.money[moneytype] - amount
              end
@@ -135,3 +134,14 @@ of PEFCL and QBCore installed**
              return self.PlayerData.money[moneytype]
          end
      ```
+
+5. Navigate to `qb-core\server\player.lua` and add the following function:
+    ```lua
+        function self.Functions.SyncMoney() 
+                local money = exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data
+                self.PlayerData.money['bank'] = money
+            if not self.Offline then
+                self.Functions.UpdatePlayerData()
+            end
+        end
+    ```
