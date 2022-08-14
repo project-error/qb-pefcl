@@ -34,14 +34,12 @@ AddEventHandler("QBCore:Server:PlayerLoaded", function(player)
 	player.Functions.SyncMoney()
 end)
 
-RegisterNetEvent("qb-pefcl:server:UnloadPlayer", function(source)
-	local src = source
-	exports.pefcl:unloadPlayer(src)
+RegisterNetEvent("qb-pefcl:server:UnloadPlayer", function()
+	exports.pefcl:unloadPlayer(source)
 end)
 
-RegisterNetEvent("qb-pefcl:server:SyncMoney", function(source)
-	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
+RegisterNetEvent("qb-pefcl:server:SyncMoney", function()
+	local player = QBCore.Functions.GetPlayer(source)
 	player.Functions.SyncMoney()
 end)
 
