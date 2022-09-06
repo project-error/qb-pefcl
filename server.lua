@@ -102,6 +102,10 @@ AddEventHandler("onServerResourceStart", function(resName)
 
 	local players = QBCore.Functions.GetQBPlayers()
 
+	if not players or players == nil then
+		print("Error loading players, if no players on the server ignore this")
+		return
+	end
 	for _, v in pairs(players) do
 		loadPlayer(v.PlayerData.source, v.PlayerData.citizenid, v.PlayerData.charinfo.firstname .. " " .. v.PlayerData.charinfo.lastname)
 		UniqueAccounts(v)
