@@ -25,13 +25,9 @@ end
 
 local function UniqueAccounts(player)
 	local citizenid = player.PlayerData.citizenid
-	local charInfo = player.PlayerData.charinfo
 	local playerSrc = player.PlayerData.source
 	local PlayerJob = player.PlayerData.job
 	if Config.BusinessAccounts[PlayerJob.name] then
-		local data = {
-			PlayerJob.name
-		}
 		if not exports.pefcl:getUniqueAccount(playerSrc, PlayerJob.name).data then
 			local data = {
 				name = tostring(Config.BusinessAccounts[PlayerJob.name].AccountName), 
@@ -71,7 +67,6 @@ AddEventHandler("QBCore:Server:PlayerLoaded", function(player)
 	local citizenid = player.PlayerData.citizenid
 	local charInfo = player.PlayerData.charinfo
 	local playerSrc = player.PlayerData.source
-	local PlayerJob = player.PlayerData.job
 	loadPlayer(playerSrc, citizenid, charInfo.firstname .. " " .. charInfo.lastname)
 	UniqueAccounts(player)				
 	player.Functions.SyncMoney()
@@ -88,10 +83,6 @@ end)
 
 RegisterNetEvent("qb-pefcl:server:OnJobUpdate", function(oldJob)
 	local player = QBCore.Functions.GetPlayer(source)
-	local data = {
-		accountIdentifier = oldJob.name,
-		userIdentifier = player.PlayerData.citizenid,
-	}
 	UniqueAccounts(player)
 end)
 
@@ -99,9 +90,7 @@ local currentResName = GetCurrentResourceName()
 
 AddEventHandler("onServerResourceStart", function(resName)
 	if resName ~= currentResName then return end
-
 	local players = QBCore.Functions.GetQBPlayers()
-
 	if not players or players == nil then
 		print("Error loading players, if no players on the server ignore this")
 		return
