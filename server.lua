@@ -95,8 +95,13 @@ RegisterNetEvent("qb-pefcl:server:OnJobUpdate", function(oldJob)
 	UniqueAccounts(player)
 end)
 
+local currentResName = GetCurrentResourceName()
+
 AddEventHandler("onServerResourceStart", function(resName)
+	if resName ~= currentResName then return end
+
 	local players = QBCore.Functions.GetQBPlayers()
+
 	for _, v in pairs(players) do
 		loadPlayer(v.PlayerData.source, v.PlayerData.citizenid, v.PlayerData.charinfo.firstname .. " " .. v.PlayerData.charinfo.lastname)
 		UniqueAccounts(v)
