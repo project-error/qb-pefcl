@@ -60,6 +60,20 @@ exports("addCash", addCash)
 exports("removeCash", removeCash)
 exports("getCash", getCash)
 
+AddEventHandler("QBCore:Server:OnMoneyChange", function(playerSrc, moneyType, amount, action, reason)
+	if action == "add" then
+		exports.pefcl:addBankBalance(playerSrc, { amount = amount, message = reason })	
+	end
+
+	if action == "remove" then
+		exports.pefcl:removeBankBalance(playerSrc, { amount = amount, message = reason })	
+	end
+
+	if action == "set" then
+		exports.pefcl:setBankBalance(playerSrc, { amount = amount, message = reason })	
+	end	
+end)
+
 AddEventHandler("QBCore:Server:PlayerLoaded", function(player)
 	if not player then
 		return
