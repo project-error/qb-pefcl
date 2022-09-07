@@ -61,6 +61,7 @@ exports("removeCash", removeCash)
 exports("getCash", getCash)
 
 AddEventHandler("QBCore:Server:OnMoneyChange", function(playerSrc, moneyType, amount, action, reason)
+	if moneyType ~= "bank" then return end
 	if action == "add" then
 		exports.pefcl:addBankBalance(playerSrc, { amount = amount, message = reason })	
 	end
