@@ -64,7 +64,7 @@ QBCore.Commands.Add('bill', 'Bill A Player', {{name = 'id', help = 'Player ID'},
     local message = args[3]
 
     if Config.BusinessAccounts[billerJobName] then
-        if billed ~= nil then
+        if billed then
             if biller.PlayerData.citizenid ~= billed.PlayerData.citizenid then
                 if amount and amount > 0 then
                     exports.pefcl:createInvoice(-1, {
