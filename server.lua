@@ -82,6 +82,12 @@ local function giveCard(source, card)
 	Player.Functions.AddItem('visa', 1, nil, info)
 end
 
+local function getBank(source)
+	local Player = QBCore.Functions.GetPlayer(source)
+	return Player.PlayerData.money["bank"] or 0
+end
+
+exports("getBank", getBank)
 exports("addCash", addCash)
 exports("removeCash", removeCash)
 exports("getCash", getCash)
