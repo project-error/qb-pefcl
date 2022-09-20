@@ -36,25 +36,79 @@ local function UniqueAccounts(player)
 			}
 			exports.pefcl:createUniqueAccount(playerSrc, data)
 		end
-
-		local role = false
-		if PlayerJob.grade.level >= Config.BusinessAccounts[PlayerJob.name].AdminRole then
-			role = 'admin'
-		elseif PlayerJob.grade.level >= Config.BusinessAccounts[PlayerJob.name].ContributorRole then
-			role = 'contributor'
-		end
-
-		if role then
-			local data = {
-				role = role,
-				accountIdentifier = PlayerJob.name,
+	end
+	local accounts = exports.pefcl:getAccounts(playerSrc).data
+	for k,v in pairs(accounts) do
+		if Config.BusinessAccounts[v.ownerIdentifier] and v.ownerIdentifier == PlayerJob.name then
+			local role = false
+			if PlayerJob.grade.level >= Config.BusinessAccounts[v.ownerIdentifier].AdminRole then
+				role = 'admin'
+			elseif PlayerJob.grade.level >= Config.BusinessAccounts[v.ownerIdentifier].ContributorRole then
+				role = 'contributor'
+			end
+			if not role then
+				local data1 = {
+					userIdentifier = citizenid,
+					accountIdentifier = v.ownerIdentifier,
+				}
+				exports.pefcl:removeUserFromUniqueAccount(playerSrc, data1)
+			elseif v.role ~= role then
+				local data1 = {
+					userIdentifier = citizenid,
+					accountIdentifier = v.ownerIdentifier,
+				}
+				exports.pefcl:removeUserFromUniqueAccount(playerSrc, data1)
+				if Config.BusinessAccounts[PlayerJob.name] then
+					local role = false
+					if PlayerJob.grade.level >= Config.BusinessAccounts[PlayerJob.name].AdminRole then
+						role = 'admin'
+					elseif PlayerJob.grade.level >= Config.BusinessAccounts[PlayerJob.name].ContributorRole then
+						role = 'contributor'
+					end
+					if role then
+						local data = {
+							role = role,
+							accountIdentifier = PlayerJob.name,
+							userIdentifier = citizenid,
+							source = playerSrc
+						}
+						exports.pefcl:addUserToUniqueAccount(playerSrc, data)
+					end
+				end
+			end 
+		elseif Config.BusinessAccounts[v.ownerIdentifier] and v.ownerIdentifier ~= PlayerJob.name then
+			local data1 = {
 				userIdentifier = citizenid,
-				source = playerSrc
+				accountIdentifier = v.ownerIdentifier,
 			}
-			exports.pefcl:addUserToUniqueAccount(playerSrc, data)
+			exports.pefcl:removeUserFromUniqueAccount(playerSrc, data1)
+		elseif Config.BusinessAccounts[PlayerJob.name] and v.ownerIdentifier ~= PlayerJob.name then
+			local data1 = {
+				userIdentifier = citizenid,
+				accountIdentifier = v.ownerIdentifier,
+			}
+			exports.pefcl:removeUserFromUniqueAccount(playerSrc, data1)
+			if Config.BusinessAccounts[PlayerJob.name] then
+				local role = false
+				if PlayerJob.grade.level >= Config.BusinessAccounts[PlayerJob.name].AdminRole then
+					role = 'admin'
+				elseif PlayerJob.grade.level >= Config.BusinessAccounts[PlayerJob.name].ContributorRole then
+					role = 'contributor'
+				end
+				if role then
+					local data = {
+						role = role,
+						accountIdentifier = PlayerJob.name,
+						userIdentifier = citizenid,
+						source = playerSrc
+					}
+					exports.pefcl:addUserToUniqueAccount(playerSrc, data)
+				end
+			end
 		end
 	end
 end
+
 
 local function getCards(source)
 	local Player = QBCore.Functions.GetPlayer(source)
@@ -86,6 +140,61 @@ local function getBank(source)
 	local Player = QBCore.Functions.GetPlayer(source)
 	return Player.PlayerData.money["bank"] or 0
 end
+
+function GetAccount(account)
+	if exports.pefcl:getUniqueAccount(-1, account).data then
+    	return exports.pefcl:getBankBalanceByIdentifier(-1, account).data
+	else
+		return false
+	end
+end
+exports('GetAccount', GetAccount)
+
+function AddMoney(src, account, amount, reason)
+	if exports.pefcl:getUniqueAccount(src, account).data then
+		local data = {
+			identifier = account,
+			amount = amount,
+			description = reason
+		}
+		exports.pefcl:addBankBalanceByIdentifier(src, data)
+		return true
+	else
+		return false
+	end
+end
+exports('AddMoney', AddMoney)
+
+function RemoveMoney(account, amount, reason)
+	if exports.pefcl:getUniqueAccount(-1, account).data then
+		if tonumber(exports.pefcl:getBankBalanceByIdentifier(-1, account).data) >= amount then
+			local data = {
+				identifier = account,
+				amount = amount,
+				description = reason
+			}
+			exports.pefcl:removeBankBalanceByIdentifier(-1, data)
+			return true
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
+exports('RemoveMoney', RemoveMoney)
+
+AddEventHandler(('__cfx_export_qb-management_%s'):format('AddMoney'), function(setCB)
+    setCB(AddMoney)
+end)
+
+AddEventHandler(('__cfx_export_qb-management_%s'):format('RemoveMoney'), function(setCB)
+    setCB(RemoveMoney)
+end)
+
+AddEventHandler(('__cfx_export_qb-management_%s'):format('GetAccount'), function(setCB)
+    setCB(GetAccount)
+end)
 
 exports("getBank", getBank)
 exports("addCash", addCash)
