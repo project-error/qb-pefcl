@@ -92,9 +92,43 @@ QBCore.Commands.Add('bill', 'Bill A Player', {{name = 'id', help = 'Player ID'},
     end
 end)
 
+local function getCards(source)
+	local Player = QBCore.Functions.GetPlayer(source)
+	local cards = Player.Functions.GetItemsByName('visa')
+	local retval = {}
+	if cards then 
+		for k, v in pairs(cards) do
+			retval[#retval+1] = {
+				id = v.info.id,
+				holder = v.info.holder,
+				number = v.info.number
+			}
+		end
+	end
+	return retval
+end
+
+local function giveCard(source, card)
+	local Player = QBCore.Functions.GetPlayer(source)
+	local info = {
+		id = card.id,
+		holder = card.holder,
+		number = card.number
+	}
+	Player.Functions.AddItem('visa', 1, nil, info)
+end
+
+local function getBank(source)
+	local Player = QBCore.Functions.GetPlayer(source)
+	return Player.PlayerData.money["bank"] or 0
+end
+
+exports("getBank", getBank)
 exports("addCash", addCash)
 exports("removeCash", removeCash)
 exports("getCash", getCash)
+exports("giveCard", giveCard)
+exports("getCards", getCards)
 
 AddEventHandler("QBCore:Server:OnMoneyChange", function(playerSrc, moneyType, amount, action, reason)
 	if moneyType ~= "bank" then return end
