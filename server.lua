@@ -60,36 +60,32 @@ QBCore.Commands.Add('bill', 'Bill A Player', {{name = 'id', help = 'Player ID'},
     local biller = QBCore.Functions.GetPlayer(source)
     local billed = QBCore.Functions.GetPlayer(tonumber(args[1]))
     local billerJobName = biller.PlayerData.job.name
-    local amount = tonumber(args[2])
+    local amount =  math.ceil(tonumber(args[2]))
     local message = args[3]
 
-    if Config.BusinessAccounts[billerJobName] then
-        if billed then
-            if biller.PlayerData.citizenid ~= billed.PlayerData.citizenid then
-                if amount and amount > 0 then
-                    exports.pefcl:createInvoice(-1, {
-                        to = billed.PlayerData.charinfo.firstname .. billed.PlayerData.charinfo.lastname,
-                        toIdentifier = billed.PlayerData.citizenid,
-                        from = tostring(Config.BusinessAccounts[billerJobName].AccountName),
-                        fromIdentifier =  biller.PlayerData.citizenid,
-                        amount = amount,
-                        message = message,
-                        receiverAccountIdentifier = billerJobName
-                    })
-                    TriggerClientEvent('QBCore:Notify', source, 'Invoice Successfully Sent', 'success')
-                    TriggerClientEvent('QBCore:Notify', billed.PlayerData.source, 'New Invoice Received')
-                else
-                    TriggerClientEvent('QBCore:Notify', source, 'Must Be A Valid Amount Above 0', 'error')
-                end
-            else
-                TriggerClientEvent('QBCore:Notify', source, 'You Cannot Bill Yourself', 'error')
-            end
-        else
-            TriggerClientEvent('QBCore:Notify', source, 'Player Not Online', 'error')
-        end
-    else
-        TriggerClientEvent('QBCore:Notify', source, 'No Access', 'error')
-    end
+    if not Config.BusinessAccounts[billerJobName] then
+		TriggerClientEvent('QBCore:Notify', source, 'No Access', 'error')
+	end
+	if not billed then
+		TriggerClientEvent('QBCore:Notify', source, 'Player Not Online', 'error')
+	end
+	if biller.PlayerData.citizenid == billed.PlayerData.citizenid then
+		TriggerClientEvent('QBCore:Notify', source, 'You Cannot Bill Yourself', 'error')
+	end
+	if not amount or amount <= 0 then
+		TriggerClientEvent('QBCore:Notify', source, 'Must Be A Valid Amount Above 0', 'error')
+	end
+	exports.pefcl:createInvoice(-1, {
+		to = billed.PlayerData.charinfo.firstname .. billed.PlayerData.charinfo.lastname,
+		toIdentifier = billed.PlayerData.citizenid,
+		from = tostring(Config.BusinessAccounts[billerJobName].AccountName),
+		fromIdentifier =  biller.PlayerData.citizenid,
+		amount = amount,
+		message = message,
+		receiverAccountIdentifier = billerJobName
+	})
+	TriggerClientEvent('QBCore:Notify', source, 'Invoice Successfully Sent', 'success')
+	TriggerClientEvent('QBCore:Notify', billed.PlayerData.source, 'New Invoice Received')
 end)
 
 local function getCards(source)
