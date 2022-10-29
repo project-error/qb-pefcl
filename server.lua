@@ -56,6 +56,38 @@ local function UniqueAccounts(player)
 	end
 end
 
+QBCore.Commands.Add('bill', 'Bill A Player', {{name = 'id', help = 'Player ID'}, {name = 'amount', help = 'Fine Amount'}, {name = 'message', help = 'Message'}}, false, function(source, args)
+	local biller = QBCore.Functions.GetPlayer(source)
+	local billed = QBCore.Functions.GetPlayer(tonumber(args[1]))
+	local billerJobName = biller.PlayerData.job.name
+	local amount =  math.ceil(tonumber(args[2]))
+	local message = args[3]
+
+	if not Config.BusinessAccounts[billerJobName] then
+		TriggerClientEvent('QBCore:Notify', source, 'No Access', 'error')
+	end
+	if not billed then
+		TriggerClientEvent('QBCore:Notify', source, 'Player Not Online', 'error')
+	end
+	if biller.PlayerData.citizenid == billed.PlayerData.citizenid then
+		TriggerClientEvent('QBCore:Notify', source, 'You Cannot Bill Yourself', 'error')
+	end
+	if not amount or amount <= 0 then
+		TriggerClientEvent('QBCore:Notify', source, 'Must Be A Valid Amount Above 0', 'error')
+	end
+	exports.pefcl:createInvoice(-1, {
+		to = billed.PlayerData.charinfo.firstname .. billed.PlayerData.charinfo.lastname,
+		toIdentifier = billed.PlayerData.citizenid,
+		from = tostring(Config.BusinessAccounts[billerJobName].AccountName),
+		fromIdentifier =  biller.PlayerData.citizenid,
+		amount = amount,
+		message = message,
+		receiverAccountIdentifier = billerJobName
+	})
+	TriggerClientEvent('QBCore:Notify', source, 'Invoice Successfully Sent', 'success')
+	TriggerClientEvent('QBCore:Notify', billed.PlayerData.source, 'New Invoice Received')
+end)
+
 local function getCards(source)
 	local Player = QBCore.Functions.GetPlayer(source)
 	local cards = Player.Functions.GetItemsByName('visa')
