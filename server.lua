@@ -57,13 +57,13 @@ local function UniqueAccounts(player)
 end
 
 QBCore.Commands.Add('bill', 'Bill A Player', {{name = 'id', help = 'Player ID'}, {name = 'amount', help = 'Fine Amount'}, {name = 'message', help = 'Message'}}, false, function(source, args)
-    local biller = QBCore.Functions.GetPlayer(source)
-    local billed = QBCore.Functions.GetPlayer(tonumber(args[1]))
-    local billerJobName = biller.PlayerData.job.name
-    local amount =  math.ceil(tonumber(args[2]))
-    local message = args[3]
+	local biller = QBCore.Functions.GetPlayer(source)
+	local billed = QBCore.Functions.GetPlayer(tonumber(args[1]))
+	local billerJobName = biller.PlayerData.job.name
+	local amount =  math.ceil(tonumber(args[2]))
+	local message = args[3]
 
-    if not Config.BusinessAccounts[billerJobName] then
+	if not Config.BusinessAccounts[billerJobName] then
 		TriggerClientEvent('QBCore:Notify', source, 'No Access', 'error')
 	end
 	if not billed then
