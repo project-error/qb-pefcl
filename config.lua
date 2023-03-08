@@ -1,4 +1,6 @@
-Config = {}
+Config = {
+    ox_inventory = false -- Enable if you're using ox_inventory
+}
 
 Config.BusinessAccounts = {
     ['police'] = { -- Job Name
