@@ -82,7 +82,7 @@ local function UniqueAccounts(player)
 				accountIdentifier = v.ownerIdentifier,
 			}
 			exports.pefcl:removeUserFromUniqueAccount(playerSrc, data1)
-		elseif Config.BusinessAccounts[PlayerJob.name] and v.ownerIdentifier ~= PlayerJob.name then
+		elseif Config.BusinessAccounts[PlayerJob.name] and v.ownerIdentifier ~= PlayerJob.name and v.type == 'shared' then
 			local data1 = {
 				userIdentifier = citizenid,
 				accountIdentifier = v.ownerIdentifier,
