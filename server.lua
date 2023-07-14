@@ -171,7 +171,7 @@ function RemoveMoney(account, amount, reason)
 			local data = {
 				identifier = account,
 				amount = amount,
-				description = reason
+				message = reason
 			}
 			exports.pefcl:removeBankBalanceByIdentifier(-1, data)
 			return true
