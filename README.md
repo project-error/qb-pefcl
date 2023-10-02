@@ -137,9 +137,11 @@ of PEFCL and QBCore installed**
 
 5. Navigate to `qb-core\server\player.lua` and add the following function:
     ```lua
-        function self.Functions.SyncMoney() 
-                local money = exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data
+       function self.Functions.SyncMoney() 
+            local money = exports.pefcl:getDefaultAccountBalance(self.PlayerData.source).data
+            if money then
                 self.PlayerData.money['bank'] = money
+            end
             if not self.Offline then
                 self.Functions.UpdatePlayerData()
             end
